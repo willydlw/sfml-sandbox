@@ -28,6 +28,8 @@ int main()
         ImGui::Button("Look at this pretty button");
         ImGui::End();
 
+        ImGui::ShowDemoWindow();
+
         window.clear();
         ImGui::SFML::Render(window);
         window.display();
