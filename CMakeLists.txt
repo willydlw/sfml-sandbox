@@ -31,5 +31,10 @@ FetchContent_Declare(ImGui-SFML
     SYSTEM)
 FetchContent_MakeAvailable(ImGui-SFML)
 
-add_executable(main src/main.cpp)
-target_link_libraries(main PRIVATE SFML::Graphics ImGui-SFML::ImGui-SFML)
+add_subdirectory(project1)
+#add_subdirectory(project2)
+#add_subdirectory(utils)
+
+# Optionally set global compile definitions or flags
+# add_compile_definitions(GLOBAL_DEF)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
