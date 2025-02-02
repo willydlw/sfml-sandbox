@@ -14,4 +14,4 @@ add_executable(project2 ${PROJECT2_SOURCES})
 
 # Link to other libraries (if needed)
 #target_link_libraries(project2 utils_lib)
-target_link_libraries(main PRIVATE SFML::Graphics ImGui-SFML::ImGui-SFML)
+target_link_libraries(project2 PRIVATE SFML::Graphics ImGui-SFML::ImGui-SFML)

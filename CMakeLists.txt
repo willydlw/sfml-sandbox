@@ -32,7 +32,7 @@ FetchContent_Declare(ImGui-SFML
 FetchContent_MakeAvailable(ImGui-SFML)
 
 add_subdirectory(project1)
-#add_subdirectory(project2)
+add_subdirectory(project2)
 #add_subdirectory(utils)
 
 # Optionally set global compile definitions or flags
