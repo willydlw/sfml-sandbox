@@ -24,16 +24,13 @@ class Maze{
 
 public:
     Maze();
-    Maze(int rows, int cols, float cellSize);
+    Maze(int rows, int cols, int margin, float cellSize);
 
     // copy constructor 
     Maze(const Maze& obj);
     
     // copy assignment
     Maze& operator= (const Maze& obj);
-
-    // move assignment???
-    //Maze& operator= (Maze&& obj);
 
     ~Maze();
 
@@ -44,6 +41,7 @@ public:
 private:
     int m_rows;
     int m_cols;
+    int m_margin;
     float m_cellSize;
     std::vector<Cell> m_grid;
 

@@ -1,14 +1,14 @@
 #include "maze.h"
 
 // Default constructor
-Maze::Maze() : m_rows(0), m_cols(0), m_cellSize(0)
+Maze::Maze() : m_rows(0), m_cols(0), m_margin(0), m_cellSize(0)
 {
 
 }
 
 // Constructor
-Maze::Maze(int rows, int cols, float cellSize) : m_rows(rows),
-    m_cols(cols), m_cellSize(cellSize)
+Maze::Maze(int rows, int cols, int margin, float cellSize) : m_rows(rows),
+    m_cols(cols), m_margin(margin), m_cellSize(cellSize)
 {
     m_grid = std::vector<Cell>(m_rows * m_cols);
     gridInit();
@@ -19,6 +19,7 @@ Maze::Maze(const Maze& obj)
 {
     this->m_rows = obj.m_rows;
     this->m_cols = obj.m_cols;
+    this->m_margin = obj.m_margin;
     this->m_cellSize = obj.m_cellSize;
     m_grid = std::vector<Cell>(m_rows * m_cols);
 
@@ -56,23 +57,13 @@ Maze& Maze::operator= (const Maze& obj)
     return *this;
 }
 
-#if 0
-Maze& Maze::operator= (Maze&& obj) noexcept
-{
-    if(this == &obj){
-        return *this;
-    }
-}
-
-#endif 
-
 
 void Maze::gridInit(void)
 {
     for(int r = 0; r < m_rows; r++){
         for(int c = 0; c < m_cols; c++){
-            float x = c * m_cellSize;
-            float y = r * m_cellSize;
+            float x = c * m_cellSize + m_margin;
+            float y = r * m_cellSize + m_margin;
             m_grid[r * m_cols + c] = Cell (x, y, 1, 1);
             std::cout << "[" << r << "][" 
                     << c << "] x: " 

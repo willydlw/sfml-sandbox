@@ -9,6 +9,10 @@
 #define WINDOW_WIDTH (400 + 2 * MARGIN) 
 #define WINDOW_HEIGHT (400 + 2 * MARGIN)
 
+#define CELLSIZE 100
+#define NUM_ROWS WINDOW_HEIGHT / CELLSIZE
+#define NUM_COLS WINDOW_WIDTH / CELLSIZE
+
 
 int main(void)
 {
@@ -18,8 +22,7 @@ int main(void)
     window.setFramerateLimit(60);
 
     // grid cell size(pixels)
-    int cellSize = 50;
-    Maze maze(2, 2, cellSize);
+    Maze maze(NUM_ROWS, NUM_COLS, MARGIN, CELLSIZE);
    
    
     sf::RectangleShape windowRect({WINDOW_WIDTH, WINDOW_HEIGHT});
