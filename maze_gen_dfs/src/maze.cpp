@@ -81,10 +81,18 @@ Maze::~Maze()
 
 void Maze::draw(sf::RenderWindow& window)
 {
-    sf::RectangleShape rect(sf::Vector2f{m_cellSize, m_cellSize});
+    /*sf::RectangleShape rect(sf::Vector2f{m_cellSize, m_cellSize});
     rect.setFillColor(sf::Color::White);
     rect.setOutlineColor(sf::Color::Green);
     rect.setOutlineThickness(4);
+    */
+
+    sf::RectangleShape rightWallLine(sf::Vector2f{m_margin, m_cellSize});
+    rightWallLine.setFillColor(sf::Color::White);
+
+    sf::RectangleShape downWallLine(sf::Vector2f{m_cellSize, m_margin});
+    downWallLine.setFillColor(sf::Color::White);
+
 
     static int count = 0;
 
@@ -98,8 +106,21 @@ void Maze::draw(sf::RenderWindow& window)
 
             count++;
             }
-            rect.setPosition({m_grid[idx].x, m_grid[idx].y});
-            window.draw(rect);
+
+            Cell cell = m_grid[idx];
+
+            if(cell.rightWall){
+                rightWallLine.setPosition(sf::Vector2f{cell.x + m_cellSize, 
+                    cell.y});
+                window.draw(rightWallLine);
+            }
+
+            if(cell.downWall){
+                downWallLine.setPosition(sf::Vector2f{cell.x, cell.y + m_cellSize});
+                window.draw(downWallLine);
+            }
+            //rect.setPosition({m_grid[idx].x, m_grid[idx].y});
+            //window.draw(rect);
         }
     }
 }

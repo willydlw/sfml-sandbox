@@ -41,7 +41,7 @@ public:
 private:
     int m_rows;
     int m_cols;
-    int m_margin;
+    float m_margin;
     float m_cellSize;
     std::vector<Cell> m_grid;
 

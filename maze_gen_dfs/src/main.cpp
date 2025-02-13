@@ -5,7 +5,7 @@
 
 #include "maze.h"
 
-#define MARGIN 8
+#define MARGIN 10
 #define WINDOW_WIDTH (400 + 2 * MARGIN) 
 #define WINDOW_HEIGHT (400 + 2 * MARGIN)
 
@@ -22,18 +22,8 @@ int main(void)
     window.setFramerateLimit(60);
 
     // grid cell size(pixels)
-    Maze maze(NUM_ROWS, NUM_COLS, MARGIN, CELLSIZE);
+    Maze maze(NUM_ROWS, NUM_COLS, MARGIN/2, CELLSIZE);
    
-   
-    sf::RectangleShape windowRect({WINDOW_WIDTH, WINDOW_HEIGHT});
-    windowRect.setPosition({0.0f, 0.0f});
-    windowRect.setFillColor(sf::Color(150,50,250));
-
-    sf::RectangleShape mazeRect({WINDOW_WIDTH - 2 * MARGIN, WINDOW_HEIGHT - 2 * MARGIN});
-    mazeRect.setPosition(sf::Vector2f(MARGIN, MARGIN));
-    mazeRect.setFillColor(sf::Color::Yellow);
-
-
     while(window.isOpen())
     {
         while(const std::optional event = window.pollEvent())
@@ -45,8 +35,6 @@ int main(void)
         }
 
         window.clear(sf::Color::Black);
-        //window.draw(windowRect);
-        //window.draw(mazeRect);
         maze.draw(window);
         
         window.display();
