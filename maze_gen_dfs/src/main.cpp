@@ -3,17 +3,12 @@
 #include <optional>
 #include <cstdlib>
 
+#include "maze.h"
+
 #define MARGIN 8
-#define WINDOW_WIDTH (800 + 2 * MARGIN) 
-#define WINDOW_HEIGHT (800 + 2 * MARGIN)
+#define WINDOW_WIDTH (400 + 2 * MARGIN) 
+#define WINDOW_HEIGHT (400 + 2 * MARGIN)
 
-
-struct Maze{
-    int width;
-    int height;
-    bool* rightWalls;
-    bool* downWalls;
-};
 
 int main(void)
 {
@@ -22,26 +17,11 @@ int main(void)
 
     window.setFramerateLimit(60);
 
-    // grid cell width
-    int cellWidth = 10;
-    int cellHeight = 10;
-    int numCells = cellWidth * cellHeight;
-    bool* rightWalls = (bool*)calloc(numCells, sizeof(bool));
-    bool* downWalls = (bool*) calloc(numCells, sizeof(bool));
-
-    for(int i = 0; i < numCells; i++)
-    {
-        rightWalls[i] = true;
-        downWalls[i] = true;
-    }
-
-    Maze maze = {
-        .width = cellWidth,
-        .height = cellHeight,
-        .rightWalls = rightWalls,
-        .downWalls = downWalls
-    };
-
+    // grid cell size(pixels)
+    int cellSize = 50;
+    Maze maze(2, 2, cellSize);
+   
+   
     sf::RectangleShape windowRect({WINDOW_WIDTH, WINDOW_HEIGHT});
     windowRect.setPosition({0.0f, 0.0f});
     windowRect.setFillColor(sf::Color(150,50,250));
@@ -62,13 +42,12 @@ int main(void)
         }
 
         window.clear(sf::Color::Black);
-        window.draw(windowRect);
-        window.draw(mazeRect);
+        //window.draw(windowRect);
+        //window.draw(mazeRect);
+        maze.draw(window);
+        
         window.display();
     }
-
-    free(rightWalls);
-    free(downWalls);
 
     return 0;
 }
