@@ -14,6 +14,8 @@
 #define NUM_COLS WINDOW_WIDTH / CELLSIZE
 
 
+
+
 int main(void)
 {
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), 
