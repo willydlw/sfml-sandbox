@@ -1,6 +1,7 @@
 #include "maze.h"
 
 #include <stack>
+#include <algorithm>
 
 // Default constructor
 Maze::Maze() : m_rows(0), m_cols(0), m_margin(0), m_cellSize(0),
@@ -169,6 +170,11 @@ void Maze::getUnvisitedNeighbors(int row, int col, std::vector<Neighbor>& unvisi
             }
         }
     }
+}
+
+int  Maze::calcIndex(int row, int col)
+{
+    return row * m_cols + col;
 }
 
 bool Maze::inbounds(int r, int c)

@@ -76,6 +76,7 @@ private:
 
     std::vector<Cell> m_grid;
 
+    int  calcIndex(int row, int col);
     void gridInit();
     bool inbounds(int r, int c);
     void getUnvisitedNeighbors(int row, int col, std::vector<Neighbor>& unvisited);
