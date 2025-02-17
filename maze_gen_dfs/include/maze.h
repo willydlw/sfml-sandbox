@@ -9,6 +9,26 @@
 #define RIGHT_WALL 1
 #define DOWN_WALL  0
 
+enum DIRECTION {
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN
+};
+
+struct Location{
+    int row;
+    int col;
+    Location(int r, int c) : row(r), col(c) {}
+};
+
+struct Neighbor{
+    Location location;
+    DIRECTION direction;
+
+    Neighbor(int r, int c, DIRECTION d) : location(r, c), direction(d) {}
+};
+
 struct Cell{
     float x;
     float y;
@@ -58,7 +78,7 @@ private:
 
     void gridInit();
     bool inbounds(int r, int c);
-    void getUnvisitedNeighborList(int row, int col, std::vector<Cell>& unvisited);
+    void getUnvisitedNeighbors(int row, int col, std::vector<Neighbor>& unvisited);
 };
 
 #endif 

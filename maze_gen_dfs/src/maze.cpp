@@ -83,49 +83,78 @@ Maze::~Maze()
     std::cerr << "~Maze bye bye\n";
 }
 
+/*
 Iterative implementation: https://en.wikipedia.org/wiki/Maze_generation_algorithm
 
 Choose the initial cell, mark it as visited and push it to the stack
 While the stack is not empty
-Pop a cell from the stack and make it a current cell
-If the current cell has any neighbours which have not been visited
-Push the current cell to the stack
-Choose one of the unvisited neighbours
-Remove the wall between the current cell and the chosen cell
-Mark the chosen cell as visited and push it to the stack
-
+    Pop a cell from the stack and make it a current cell
+    If the current cell has any neighbours which have not been visited
+        Push the current cell to the stack
+        Choose one of the unvisited neighbours
+        Remove the wall between the current cell and the chosen cell
+        Mark the chosen cell as visited and push it to the stack
+*/
 
 void Maze::generate(void)
 {
     std::uniform_int_distribution<int> row_distribution(0, m_rows);
-    std::stack<Cell> cellStack;
+    std::stack<Cell*> cellStack;
+
+    // choose the initial cell
     int row = m_row_distribution(m_rand_engine);
     int col = m_col_distribution(m_rand_engine);
-    Cell& current = m_grid[row * m_cols + col];
-    current.visited = true;
+    Cell* current = &m_grid[row * m_cols + col];
+
+    // mark initial cell as visited and push it to the stack
+    current->visited = true;
     cellStack.push(current);
+
+    // while stack is not empty
     while(!cellStack.empty()){
+        // pop a cell from the stack and mark it as current
         current = cellStack.top();
         cellStack.pop();
-        std::vector<Cell> unvisited;
 
-        Correction required: choose one of the unvisited neighbors 
-        getUnvisitedNeighborList(row, col, unvisited);
-        for(auto u : unvisited){
-            cellStack.push(u);
+        // If the current cell has any neighbours which have not been visited
+        std::vector<Neighbor> unvisited;
+        getUnvisitedNeighbors(row, col, unvisited);
+
+        if(unvisited.size() > 0){
+            // Choose one of the unvisited neighbours
+            std::uniform_int_distribution<int> chosen_distribution(0, unvisited.size());
+            int ci = chosen_distribution(m_rand_engine);
+            Neighbor chosen = unvisited[ci];
+            Cell* chosenCell = &m_grid[chosen.location.row * m_cols + chosen.location.col];
+            
+            // Remove walls between current and chosen neighbor 
+            switch(chosen.direction){
+                case LEFT:
+                    chosenCell->rightWall = false;
+                break;
+                case RIGHT:
+                    current->rightWall = false;
+                break;
+                case UP:
+                    chosenCell->downWall = false;
+                break;
+                case DOWN:
+                    current->downWall = false;
+                break;
+            }
+
+            //  Mark the chosen cell as visited and push it to the stack
+            chosenCell->visited = true;
+            cellStack.push(chosenCell);
         }
-
-        Remove walls between current and chosen neighbor 
-
     }
-    
 }
 
-void Maze::getUnvisitedNeighborList(int row, int col, std::vector<Cell>& unvisited)
+void Maze::getUnvisitedNeighbors(int row, int col, std::vector<Neighbor>& unvisited)
 {
-    // above, left, right, below
-    const int dx[4] = {0, -1, 1, 0};
-    const int dy[4] = {-1, 0, 0, 1};
+    // left, right, up, down
+    const int dx[4] = {-1,  1, 0,  0};
+    const int dy[4] = { 0,  0, -1, 1};
 
     // randomize neighbor selection order
     int ri[4] = {0, 1, 2, 3};
@@ -136,7 +165,7 @@ void Maze::getUnvisitedNeighborList(int row, int col, std::vector<Cell>& unvisit
         int c = col + dx[ri[i]];
         if(inbounds(r, c)){
             if(!m_grid[r * m_cols + c].visited){
-                unvisited.push_back(m_grid[r * m_cols + c]);
+                unvisited.push_back(Neighbor(r,c, static_cast<DIRECTION>(i)));
             }
         }
     }
