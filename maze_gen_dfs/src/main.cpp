@@ -14,14 +14,12 @@
 #define NUM_COLS WINDOW_WIDTH / CELLSIZE
 
 
-
-
 int main(void)
 {
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), 
         "Randomized Maze Generation - DFS Recursive Backtrack");
 
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(2);
 
     // grid cell size(pixels)
     Maze maze(NUM_ROWS, NUM_COLS, MARGIN/2, CELLSIZE);

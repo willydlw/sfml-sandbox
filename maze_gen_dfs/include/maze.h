@@ -36,24 +36,33 @@ struct Cell{
     int downWall;
     bool visited;
 
-    Cell(): x(0.0f), y(0.0f), rightWall(0), downWall(0), visited(false) {}
-    Cell(float x, float y) : x(x), y(y), rightWall(0), downWall(0), visited(false) {}
+    Cell(float x = 0.0f, float y = 0.0f) : x(x), y(y), rightWall(1), downWall(1), visited(false) {}
     Cell(float x, float y, int right, int down) :
         x(x), y(y), rightWall(right), downWall(down), visited(false) {}
+};
+
+struct SearchInfo{
+    Cell* cellptr;
+    Location location;
 };
 
 class Maze{
 
 public:
-    Maze();
-    Maze(int rows, int cols, int margin, float cellSize);
 
-    // copy constructor 
-    Maze(const Maze& obj);
-    
-    // copy assignment
-    Maze& operator= (const Maze& obj);
+    static constexpr int DEFAULT_ROWS = 4;
+    static constexpr int DEFAULT_COLS = 4;
+    static constexpr int DEFAULT_MARGIN = 8;
+    static constexpr float DEFAULT_CELLSIZE = 20.0f;
 
+    static std::random_device rand_device;
+    static std::mt19937 rand_engine;
+
+    // Constructor
+    explicit Maze(int rows = DEFAULT_ROWS, int cols = DEFAULT_COLS, 
+                    int margin = DEFAULT_MARGIN, float cellSize = DEFAULT_CELLSIZE);
+
+    // Desctructor
     ~Maze();
 
     void draw(sf::RenderWindow& window);
@@ -68,18 +77,24 @@ private:
     float m_margin;
     float m_cellSize;
   
-    std::random_device m_rand_device;
-    std::mt19937 m_rand_engine;
-    std::uniform_int_distribution<int> m_row_distribution; 
-    std::uniform_int_distribution<int> m_col_distribution;
-
-
     std::vector<Cell> m_grid;
 
+    // Copy constructor is private
+    // Data member std::random_device should not be copied
+    // Making copy constructor private will prevent the compiler from generating
+    // a default constructor 
+    Maze(const Maze& obj);
+    
+    // copy assignment
+    Maze& operator= (const Maze& obj);
+
     int  calcIndex(int row, int col);
+    int  calcIndex(Location loc);
     void gridInit();
     bool inbounds(int r, int c);
-    void getUnvisitedNeighbors(int row, int col, std::vector<Neighbor>& unvisited);
+    void getUnvisitedNeighbors(Location location, std::vector<Neighbor>& unvisited);
+
+    Location selectInitialLocation();
 };
 
 #endif 
