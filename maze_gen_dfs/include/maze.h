@@ -6,8 +6,6 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-#define RIGHT_WALL 1
-#define DOWN_WALL  0
 
 enum DIRECTION {
     LEFT,
@@ -49,14 +47,21 @@ struct SearchInfo{
 class Maze{
 
 public:
-
+    // class constant expressions, default values
     static constexpr int DEFAULT_ROWS = 4;
     static constexpr int DEFAULT_COLS = 4;
     static constexpr int DEFAULT_MARGIN = 8;
     static constexpr float DEFAULT_CELLSIZE = 20.0f;
 
+    // random number device and engine
     static std::random_device rand_device;
     static std::mt19937 rand_engine;
+
+    enum GenerateState{
+        START,
+        ANIMATE,
+        COMPLETE
+    };
 
     // Constructor
     explicit Maze(int rows = DEFAULT_ROWS, int cols = DEFAULT_COLS, 
@@ -65,6 +70,7 @@ public:
     // Desctructor
     ~Maze();
 
+    Maze::GenerateState state() {return m_state;}
     void draw(sf::RenderWindow& window);
 
     void generate(void);
@@ -76,6 +82,7 @@ private:
     int m_cols;
     float m_margin;
     float m_cellSize;
+    GenerateState m_state;
   
     std::vector<Cell> m_grid;
 
@@ -94,7 +101,10 @@ private:
     bool inbounds(int r, int c);
     void getUnvisitedNeighbors(Location location, std::vector<Neighbor>& unvisited);
 
+    void startGeneration(std::stack<SearchInfo>& searchStack);
     Location selectInitialLocation();
+
+    void animateGeneration(std::stack<SearchInfo>& searchStack);
 };
 
 #endif 

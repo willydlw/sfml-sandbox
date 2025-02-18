@@ -10,7 +10,7 @@ std::mt19937 Maze::rand_engine(Maze::rand_device());
 
 // Constructor
 Maze::Maze(int rows, int cols, int margin, float cellSize) : m_rows(rows),
-    m_cols(cols), m_margin(margin), m_cellSize(cellSize)
+    m_cols(cols), m_margin(margin), m_cellSize(cellSize), m_state(Maze::GenerateState::START)
 {
     m_grid = std::vector<Cell>(m_rows * m_cols);
     gridInit();
@@ -23,6 +23,7 @@ Maze::Maze(const Maze& obj)
     m_cols = obj.m_cols;
     m_margin = obj.m_margin;
     m_cellSize = obj.m_cellSize;
+    m_state = Maze::GenerateState::START;
 
 
     int numCells = m_rows * m_cols;
@@ -97,8 +98,30 @@ While the stack is not empty
 void Maze::generate(void)
 {
     // Local variables
-    std::stack<SearchInfo> searchStack;
+    static std::stack<SearchInfo> searchStack;
 
+    switch(m_state)
+    {
+        case START:
+            startGeneration(searchStack);
+            m_state = ANIMATE;
+        break;
+
+        case ANIMATE:
+            if(!searchStack.empty()){
+                animateGeneration(searchStack);
+            }
+            else{
+                m_state = COMPLETE;
+            }
+        break;
+        case COMPLETE:
+        break;
+    }
+}
+
+void Maze::startGeneration(std::stack<SearchInfo>& searchStack)
+{
     // choose the initial cell
     Location startLocation = selectInitialLocation();
     int idx = calcIndex(startLocation);
@@ -108,46 +131,6 @@ void Maze::generate(void)
     // mark initial cell as visited and push it to the stack
     current.cellptr->visited = true;
     searchStack.push(current);
-
-    // while stack is not empty
-    while(!searchStack.empty()){
-        // pop a cell from the stack and mark it as current
-        current = searchStack.top();
-        searchStack.pop();
-
-        // If the current cell has any neighbours which have not been visited
-        std::vector<Neighbor> unvisited;
-        getUnvisitedNeighbors(current.location, unvisited);
-
-        if(unvisited.size() > 0){
-            // Choose one of the unvisited neighbours
-            std::uniform_int_distribution<int> chosen_distribution(0, unvisited.size());
-            int ci = chosen_distribution(Maze::rand_engine);
-            Neighbor chosen = unvisited[ci];
-
-            Cell* chosenCell = &m_grid[chosen.location.row * m_cols + chosen.location.col];
-            
-            // Remove walls between current and chosen neighbor 
-            switch(chosen.direction){
-                case LEFT:
-                    chosenCell->rightWall = false;
-                break;
-                case RIGHT:
-                    current.cellptr->rightWall = false;
-                break;
-                case UP:
-                    chosenCell->downWall = false;
-                break;
-                case DOWN:
-                    current.cellptr->downWall = false;
-                break;
-            }
-
-            //  Mark the chosen cell as visited and push it to the stack
-            chosenCell->visited = true;
-            searchStack.push(SearchInfo{.cellptr = chosenCell, .location = chosen.location});
-        }
-    }
 }
 
 Location Maze::selectInitialLocation()
@@ -159,6 +142,51 @@ Location Maze::selectInitialLocation()
     int col = col_distribution(Maze::rand_engine);
 
     return Location(row, col);
+}
+
+void Maze::animateGeneration(std::stack<SearchInfo>& searchStack)
+{
+    // while stack is not empty is accommplished by calling this
+    // function repeatedly from the generate function
+    // This allows animation of the generation process
+   
+    // pop a cell from the stack and mark it as current
+    SearchInfo current = searchStack.top();
+    searchStack.pop();
+
+    // If the current cell has any neighbours which have not been visited
+    std::vector<Neighbor> unvisited;
+    getUnvisitedNeighbors(current.location, unvisited);
+    
+    if(unvisited.size() > 0){
+        // Randomly choose one of the unvisited neighbours
+        std::uniform_int_distribution<int> chosen_distribution(0, unvisited.size());
+        int ci = chosen_distribution(Maze::rand_engine);
+        Neighbor chosen = unvisited[ci];
+
+        ci = calcIndex(chosen.location.row, chosen.location.col);
+        Cell* chosenCell = &m_grid[ci];
+        
+        // Remove walls between current and chosen neighbor 
+        switch(chosen.direction){
+            case LEFT:
+                chosenCell->rightWall = false;
+            break;
+            case RIGHT:
+                current.cellptr->rightWall = false;
+            break;
+            case UP:
+                chosenCell->downWall = false;
+            break;
+            case DOWN:
+                current.cellptr->downWall = false;
+            break;
+        }
+
+        //  Mark the chosen cell as visited and push it to the stack
+        chosenCell->visited = true;
+        searchStack.push(SearchInfo{.cellptr = chosenCell, .location = chosen.location});
+    }
 }
 
 void Maze::getUnvisitedNeighbors(Location location, std::vector<Neighbor>& unvisited)

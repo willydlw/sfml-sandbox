@@ -35,8 +35,12 @@ int main(void)
         }
 
         window.clear(sf::Color::Black);
-        maze.draw(window);
+      
+        if(maze.state() != Maze::GenerateState::COMPLETE){
+            maze.generate();
+        }
         
+        maze.draw(window);
         window.display();
     }
 
