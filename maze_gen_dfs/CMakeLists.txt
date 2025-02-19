@@ -12,3 +12,5 @@ add_executable(dfsmaze ${DFSMAZE_SOURCES})
 
 # Link to other libraries (if needed)
 target_link_libraries(dfsmaze PRIVATE SFML::Graphics)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -pedantic")

@@ -8,7 +8,7 @@ std::mt19937 Maze::rand_engine(Maze::rand_device());
 
 
 // Constructor
-Maze::Maze(int rows, int cols, int margin, float cellSize) : m_rows(rows),
+Maze::Maze(int rows, int cols, int margin, int cellSize) : m_rows(rows),
     m_cols(cols), m_margin(margin), m_cellSize(cellSize), m_state(Maze::GenerateState::START)
 {
     m_grid = std::vector<Cell>(m_rows * m_cols);
@@ -147,32 +147,24 @@ Location Maze::selectInitialLocation()
 // Function should only be called when the search stack is not empty
 void Maze::animateGeneration(std::stack<SearchInfo>& searchStack)
 {   
-    std::cerr << "\n" << __func__ << ", stack size: " << searchStack.size() << "\n";
+    std::cerr <<  __func__ << ", stack size: " << searchStack.size() << "\n";
     // pop a cell from the stack and mark it as current
     SearchInfo current = searchStack.top();
     searchStack.pop();
 
     current.cellptr->color = Maze::CURRENT_COLOR;
 
-    std::cerr << "Current cell: " << *current.cellptr;
-    std::cerr << "current location row: " << current.location.row 
-        << ", col: " << current.location.col << "\n\n";
-
-    // If the current cell has any neighbours which have not been visited
+    // If the current cell has any neighbors which have not been visited
     std::vector<Neighbor> unvisited;
     getUnvisitedNeighbors(current.location, unvisited);
-
-    std::cerr << "unvisited.size: " << unvisited.size() << "\n";
-    
+        
     if(unvisited.size() > 0){
+        searchStack.push(current);
+
         // Randomly choose one of the unvisited neighbours
-        std::uniform_int_distribution<int> chosen_distribution(0, unvisited.size());
+        std::uniform_int_distribution<int> chosen_distribution(0, unvisited.size()-1);
         int ci = chosen_distribution(Maze::rand_engine);
         Neighbor chosen = unvisited[ci];
-
-        std::cerr << "Chosen neighbor location, row: " << chosen.location.row 
-            << ", col: " << chosen.location.col 
-            << ", direction: " << chosen.direction << "\n";
 
         ci = calcIndex(chosen.location.row, chosen.location.col);
         Cell* chosenCell = &m_grid[ci];
@@ -181,19 +173,15 @@ void Maze::animateGeneration(std::stack<SearchInfo>& searchStack)
         // Remove walls between current and chosen neighbor 
         switch(chosen.direction){
             case LEFT:
-                std::cerr << "chosen neighbor to LEFT of current, remove chosen's right wall\n";
                 chosenCell->rightWall = false;
             break;
             case RIGHT:
-                std::cerr << "chosen neighbor to RIGHT of current, remove current's right wall\n";
                 current.cellptr->rightWall = false;
             break;
             case UP:
-                std::cerr << "chosen neighbor to UP of current, remove chosen's down wall\n";
                 chosenCell->downWall = false;
             break;
             case DOWN:
-                std::cerr << "chosen neighbor to DOWN of current, remove current's down wall\n";
                 current.cellptr->downWall = false;
             break;
             default:
@@ -213,18 +201,9 @@ void Maze::getUnvisitedNeighbors(Location location, std::vector<Neighbor>& unvis
     const int dx[4] = {-1,  1, 0,  0};
     const int dy[4] = { 0,  0, -1, 1};
 
-    if(location.row >= m_rows || location.row < 0 || location.col < 0 || location.col >= m_cols)
-    {
-        std::cerr << "ERROR, " << __func__ << ", invalid location. row: " << location.row 
-        << ", col: " << location.col << "\n";
-        exit(EXIT_FAILURE);
-    }
-   
     for(int i = 0; i < 4; i++){
         int r = location.row + dy[i];
         int c = location.col + dx[i];
-        std::cerr << __func__ <<  ", location.row: " << location.row << ", location.col: " << location.col 
-        << ", r: " << r << ", c: " << c << ", direction: " << i << "\n";
         if(inbounds(r, c)){
             if(!m_grid[calcIndex(r,c)].visited){
                 Neighbor nb(Location(r,c),i);

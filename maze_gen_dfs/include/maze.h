@@ -7,13 +7,13 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-
+/*
 enum DIRECTION : int {
     LEFT    = 0,
     RIGHT   = 1,
     UP      = 2,
     DOWN    = 3
-};
+}; */
 
 struct Location{
     int row;
@@ -26,6 +26,14 @@ struct Neighbor{
     int direction;
 
     Neighbor(Location loc, int d) : location(loc), direction(d) {}
+
+    friend std::ostream& operator<< (std::ostream& os, const Neighbor& obj)
+    {
+        os << "row: " << obj.location.row << ", col: " << obj.location.col 
+            << ", direction: " << obj.direction << "\n";
+
+        return os;
+    }
 };
 
 struct Cell{
@@ -67,7 +75,13 @@ public:
     static constexpr int DEFAULT_ROWS = 4;
     static constexpr int DEFAULT_COLS = 4;
     static constexpr int DEFAULT_MARGIN = 8;
-    static constexpr float DEFAULT_CELLSIZE = 20.0f;
+    static constexpr int DEFAULT_CELLSIZE = 20;
+
+    // Grid Neighbor Directions
+    static constexpr int LEFT    = 0;
+    static constexpr int RIGHT   = 1;
+    static constexpr int UP      = 2;
+    static constexpr int DOWN    = 3;
 
     // cell state colors
     inline static const sf::Color START_COLOR     = sf::Color{11, 102, 35};
@@ -89,7 +103,7 @@ public:
 
     // Constructor
     explicit Maze(int rows = DEFAULT_ROWS, int cols = DEFAULT_COLS, 
-                    int margin = DEFAULT_MARGIN, float cellSize = DEFAULT_CELLSIZE);
+                    int margin = DEFAULT_MARGIN, int cellSize = DEFAULT_CELLSIZE);
 
     // Desctructor
     ~Maze();

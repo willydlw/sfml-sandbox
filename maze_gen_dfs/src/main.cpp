@@ -35,11 +35,9 @@ int main(void)
         }
 
         window.clear(sf::Color::Black);
-      
         if(maze.state() != Maze::GenerateState::COMPLETE){
             maze.generate();
         }
-
         maze.draw(window);
         window.display();
     }
