@@ -69,9 +69,6 @@ void Maze::gridInit(void)
             float x = c * m_cellSize + m_margin;
             float y = r * m_cellSize + m_margin;
             m_grid[r * m_cols + c] = Cell (x, y, 1, 1);
-            std::cout << "[" << r << "][" 
-                    << c << "] x: " 
-                    << x << ", y: " << y << "\n";
         }
     }
 }
@@ -123,14 +120,19 @@ void Maze::generate(void)
 void Maze::startGeneration(std::stack<SearchInfo>& searchStack)
 {
     // choose the initial cell
-    Location startLocation = selectInitialLocation();
-    int idx = calcIndex(startLocation);
+    Location startLocation = {0,0}; //selectInitialLocation();
+    int idx = 0; //calcIndex(startLocation);
 
     SearchInfo current = {.cellptr = &m_grid[idx], .location = startLocation};
 
     // mark initial cell as visited and push it to the stack
     current.cellptr->visited = true;
+    current.cellptr->color = Maze::START_COLOR;
     searchStack.push(current);
+
+    std::cerr << __func__ << ", startLocation row: " << startLocation.row 
+        << ", col: " << startLocation.col << "\n";
+    std::cerr << "Cell info\n" << *current.cellptr << "\n";
 }
 
 Location Maze::selectInitialLocation()
@@ -239,21 +241,17 @@ void Maze::draw(sf::RenderWindow& window)
     sf::RectangleShape downWallLine(sf::Vector2f{m_cellSize, m_margin});
     downWallLine.setFillColor(sf::Color::White);
 
-
-    static int count = 0;
+    sf::RectangleShape inner(sf::Vector2f{m_cellSize - 2.0f * m_margin, 
+                            m_cellSize - 2.0f * m_margin});
 
     for(int r = 0; r < m_rows; r++){
         for(int c = 0; c < m_cols; c++){
             int idx = r * m_cols + c;
-            if(count < 4){
-            std::cout << "idx: " << idx << ", x: " << m_grid[idx].x 
-
-            << ", y: " << m_grid[idx].y << "\n";
-
-            count++;
-            }
-
             Cell cell = m_grid[idx];
+
+            inner.setPosition(sf::Vector2f{cell.x + m_margin, cell.y + m_margin});
+            inner.setFillColor(cell.color);
+            window.draw(inner);
 
             if(cell.rightWall){
                 rightWallLine.setPosition(sf::Vector2f{cell.x + m_cellSize, 

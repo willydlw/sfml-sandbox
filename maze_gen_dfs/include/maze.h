@@ -30,13 +30,26 @@ struct Neighbor{
 struct Cell{
     float x;
     float y;
-    int rightWall;
-    int downWall;
+    bool rightWall;
+    bool downWall;
     bool visited;
+    sf::Color color;
 
-    Cell(float x = 0.0f, float y = 0.0f) : x(x), y(y), rightWall(1), downWall(1), visited(false) {}
-    Cell(float x, float y, int right, int down) :
+    Cell(float x = 0.0f, float y = 0.0f) : x(x), y(y), rightWall(true), 
+            downWall(true), visited(false), color(sf::Color::Black) {}
+    Cell(float x, float y, bool right, bool down) :
         x(x), y(y), rightWall(right), downWall(down), visited(false) {}
+
+    friend std::ostream& operator << (std::ostream& os, Cell& obj)
+    {
+        os << "x: " << obj.x << ", y: " << obj.y  
+            << ", rightWall: " << (obj.rightWall ? "true" : "false")
+            << ", downWall: " << (obj.downWall? "true" : "false")
+             << ", visited: " << (obj.visited ? "true" : "false")
+             << "\n"; 
+
+        return os;
+    }
 };
 
 struct SearchInfo{
@@ -52,6 +65,12 @@ public:
     static constexpr int DEFAULT_COLS = 4;
     static constexpr int DEFAULT_MARGIN = 8;
     static constexpr float DEFAULT_CELLSIZE = 20.0f;
+
+    // cell state colors
+    static constexpr sf::Color START_COLOR {sf::Color{11, 102, 35}};
+    static constexpr sf::Color CURRENT_COLOR {sf::Color{255, 116, 23}};
+    static constexpr sf::Color VISITED_COLOR {sf::Color::Red};
+    static constexpr sf::Color STACK_COLOR {sf::Color{48, 148, 129}};
 
     // random number device and engine
     static std::random_device rand_device;

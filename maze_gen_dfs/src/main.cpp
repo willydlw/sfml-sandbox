@@ -19,7 +19,7 @@ int main(void)
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), 
         "Randomized Maze Generation - DFS Recursive Backtrack");
 
-    window.setFramerateLimit(2);
+    window.setFramerateLimit(1);
 
     // grid cell size(pixels)
     Maze maze(NUM_ROWS, NUM_COLS, MARGIN/2, CELLSIZE);
@@ -39,7 +39,7 @@ int main(void)
         if(maze.state() != Maze::GenerateState::COMPLETE){
             maze.generate();
         }
-        
+
         maze.draw(window);
         window.display();
     }
