@@ -1,12 +1,11 @@
 #include "maze.h"
 
-#include <stack>
 #include <algorithm>
 
-std::random_device Maze::rand_device;
-
 // rand_device() generates random number to seed the engine
+std::random_device Maze::rand_device;
 std::mt19937 Maze::rand_engine(Maze::rand_device());
+
 
 // Constructor
 Maze::Maze(int rows, int cols, int margin, float cellSize) : m_rows(rows),
@@ -24,7 +23,6 @@ Maze::Maze(const Maze& obj)
     m_margin = obj.m_margin;
     m_cellSize = obj.m_cellSize;
     m_state = Maze::GenerateState::START;
-
 
     int numCells = m_rows * m_cols;
     m_grid = std::vector<Cell>(numCells);
@@ -68,7 +66,7 @@ void Maze::gridInit(void)
         for(int c = 0; c < m_cols; c++){
             float x = c * m_cellSize + m_margin;
             float y = r * m_cellSize + m_margin;
-            m_grid[r * m_cols + c] = Cell (x, y, 1, 1);
+            m_grid[r * m_cols + c] = Cell (x, y);
         }
     }
 }
@@ -132,7 +130,7 @@ void Maze::startGeneration(std::stack<SearchInfo>& searchStack)
 
     std::cerr << __func__ << ", startLocation row: " << startLocation.row 
         << ", col: " << startLocation.col << "\n";
-    std::cerr << "Cell info\n" << *current.cellptr << "\n";
+    std::cerr << "start cell " << *current.cellptr << "\n";
 }
 
 Location Maze::selectInitialLocation()
@@ -146,19 +144,25 @@ Location Maze::selectInitialLocation()
     return Location(row, col);
 }
 
+// Function should only be called when the search stack is not empty
 void Maze::animateGeneration(std::stack<SearchInfo>& searchStack)
-{
-    // while stack is not empty is accommplished by calling this
-    // function repeatedly from the generate function
-    // This allows animation of the generation process
-   
+{   
+    std::cerr << "\n" << __func__ << ", stack size: " << searchStack.size() << "\n";
     // pop a cell from the stack and mark it as current
     SearchInfo current = searchStack.top();
     searchStack.pop();
 
+    current.cellptr->color = Maze::CURRENT_COLOR;
+
+    std::cerr << "Current cell: " << *current.cellptr;
+    std::cerr << "current location row: " << current.location.row 
+        << ", col: " << current.location.col << "\n\n";
+
     // If the current cell has any neighbours which have not been visited
     std::vector<Neighbor> unvisited;
     getUnvisitedNeighbors(current.location, unvisited);
+
+    std::cerr << "unvisited.size: " << unvisited.size() << "\n";
     
     if(unvisited.size() > 0){
         // Randomly choose one of the unvisited neighbours
@@ -166,23 +170,35 @@ void Maze::animateGeneration(std::stack<SearchInfo>& searchStack)
         int ci = chosen_distribution(Maze::rand_engine);
         Neighbor chosen = unvisited[ci];
 
+        std::cerr << "Chosen neighbor location, row: " << chosen.location.row 
+            << ", col: " << chosen.location.col 
+            << ", direction: " << chosen.direction << "\n";
+
         ci = calcIndex(chosen.location.row, chosen.location.col);
         Cell* chosenCell = &m_grid[ci];
+        chosenCell->color = Maze::CHOSEN_COLOR;
         
         // Remove walls between current and chosen neighbor 
         switch(chosen.direction){
             case LEFT:
+                std::cerr << "chosen neighbor to LEFT of current, remove chosen's right wall\n";
                 chosenCell->rightWall = false;
             break;
             case RIGHT:
+                std::cerr << "chosen neighbor to RIGHT of current, remove current's right wall\n";
                 current.cellptr->rightWall = false;
             break;
             case UP:
+                std::cerr << "chosen neighbor to UP of current, remove chosen's down wall\n";
                 chosenCell->downWall = false;
             break;
             case DOWN:
+                std::cerr << "chosen neighbor to DOWN of current, remove current's down wall\n";
                 current.cellptr->downWall = false;
             break;
+            default:
+                std::cerr << "ERROR, " << __func__ << ", unknown direction: " << chosen.direction << "\n";
+                exit(EXIT_FAILURE);
         }
 
         //  Mark the chosen cell as visited and push it to the stack
@@ -197,15 +213,22 @@ void Maze::getUnvisitedNeighbors(Location location, std::vector<Neighbor>& unvis
     const int dx[4] = {-1,  1, 0,  0};
     const int dy[4] = { 0,  0, -1, 1};
 
-    // randomize neighbor selection order
-    int ri[4] = {0, 1, 2, 3};
+    if(location.row >= m_rows || location.row < 0 || location.col < 0 || location.col >= m_cols)
+    {
+        std::cerr << "ERROR, " << __func__ << ", invalid location. row: " << location.row 
+        << ", col: " << location.col << "\n";
+        exit(EXIT_FAILURE);
+    }
    
     for(int i = 0; i < 4; i++){
-        int r = location.row + dy[ri[i]];
-        int c = location.col + dx[ri[i]];
+        int r = location.row + dy[i];
+        int c = location.col + dx[i];
+        std::cerr << __func__ <<  ", location.row: " << location.row << ", location.col: " << location.col 
+        << ", r: " << r << ", c: " << c << ", direction: " << i << "\n";
         if(inbounds(r, c)){
             if(!m_grid[calcIndex(r,c)].visited){
-                unvisited.push_back(Neighbor(r,c, static_cast<DIRECTION>(i)));
+                Neighbor nb(Location(r,c),i);
+                unvisited.push_back(nb);
             }
         }
     }
@@ -235,10 +258,10 @@ void Maze::draw(sf::RenderWindow& window)
     rect.setOutlineThickness(4);
     */
 
-    sf::RectangleShape rightWallLine(sf::Vector2f{m_margin, m_cellSize});
+    sf::RectangleShape rightWallLine(sf::Vector2f{(float)m_margin, (float)m_cellSize});
     rightWallLine.setFillColor(sf::Color::White);
 
-    sf::RectangleShape downWallLine(sf::Vector2f{m_cellSize, m_margin});
+    sf::RectangleShape downWallLine(sf::Vector2f{(float)m_cellSize, (float)m_margin});
     downWallLine.setFillColor(sf::Color::White);
 
     sf::RectangleShape inner(sf::Vector2f{m_cellSize - 2.0f * m_margin, 
@@ -249,22 +272,20 @@ void Maze::draw(sf::RenderWindow& window)
             int idx = r * m_cols + c;
             Cell cell = m_grid[idx];
 
-            inner.setPosition(sf::Vector2f{cell.x + m_margin, cell.y + m_margin});
+            inner.setPosition(sf::Vector2f{(float)(cell.x + m_margin), (float)(cell.y + m_margin)});
             inner.setFillColor(cell.color);
             window.draw(inner);
 
             if(cell.rightWall){
-                rightWallLine.setPosition(sf::Vector2f{cell.x + m_cellSize, 
-                    cell.y});
+                rightWallLine.setPosition(sf::Vector2f{(float)(cell.x + m_cellSize), 
+                    (float)cell.y});
                 window.draw(rightWallLine);
             }
 
             if(cell.downWall){
-                downWallLine.setPosition(sf::Vector2f{cell.x, cell.y + m_cellSize});
+                downWallLine.setPosition(sf::Vector2f{(float)cell.x, (float)(cell.y + m_cellSize)});
                 window.draw(downWallLine);
             }
-            //rect.setPosition({m_grid[idx].x, m_grid[idx].y});
-            //window.draw(rect);
         }
     }
 }

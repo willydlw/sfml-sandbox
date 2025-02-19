@@ -3,15 +3,16 @@
 
 #include <iostream>
 #include <random>
+#include <stack>
 #include <vector>
 #include <SFML/Graphics.hpp>
 
 
-enum DIRECTION {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN
+enum DIRECTION : int {
+    LEFT    = 0,
+    RIGHT   = 1,
+    UP      = 2,
+    DOWN    = 3
 };
 
 struct Location{
@@ -22,35 +23,37 @@ struct Location{
 
 struct Neighbor{
     Location location;
-    DIRECTION direction;
+    int direction;
 
-    Neighbor(int r, int c, DIRECTION d) : location(r, c), direction(d) {}
+    Neighbor(Location loc, int d) : location(loc), direction(d) {}
 };
 
 struct Cell{
-    float x;
-    float y;
+    int x;
+    int y;
     bool rightWall;
     bool downWall;
     bool visited;
     sf::Color color;
 
-    Cell(float x = 0.0f, float y = 0.0f) : x(x), y(y), rightWall(true), 
+    Cell(int x = 0, int y = 0) : x(x), y(y), rightWall(true), 
             downWall(true), visited(false), color(sf::Color::Black) {}
-    Cell(float x, float y, bool right, bool down) :
+    Cell(int x, int y, bool right, bool down) :
         x(x), y(y), rightWall(right), downWall(down), visited(false) {}
 
-    friend std::ostream& operator << (std::ostream& os, Cell& obj)
+    friend std::ostream& operator << (std::ostream& os, const Cell& obj)
     {
         os << "x: " << obj.x << ", y: " << obj.y  
             << ", rightWall: " << (obj.rightWall ? "true" : "false")
             << ", downWall: " << (obj.downWall? "true" : "false")
-             << ", visited: " << (obj.visited ? "true" : "false")
-             << "\n"; 
+                << ", visited: " << (obj.visited ? "true" : "false")
+                << "\n"; 
 
         return os;
     }
 };
+
+
 
 struct SearchInfo{
     Cell* cellptr;
@@ -67,10 +70,12 @@ public:
     static constexpr float DEFAULT_CELLSIZE = 20.0f;
 
     // cell state colors
-    static constexpr sf::Color START_COLOR {sf::Color{11, 102, 35}};
-    static constexpr sf::Color CURRENT_COLOR {sf::Color{255, 116, 23}};
-    static constexpr sf::Color VISITED_COLOR {sf::Color::Red};
-    static constexpr sf::Color STACK_COLOR {sf::Color{48, 148, 129}};
+    inline static const sf::Color START_COLOR     = sf::Color{11, 102, 35};
+    inline static const sf::Color CURRENT_COLOR   = sf::Color{255, 116, 23};
+    inline static const sf::Color CHOSEN_COLOR    = sf::Color::Blue;
+    inline static const sf::Color VISITED_COLOR   = sf::Color::Red;
+    inline static const sf::Color STACK_COLOR     = sf::Color{48, 148, 129};
+
 
     // random number device and engine
     static std::random_device rand_device;
@@ -99,8 +104,8 @@ public:
 private:
     int m_rows;
     int m_cols;
-    float m_margin;
-    float m_cellSize;
+    int m_margin;
+    int m_cellSize;
     GenerateState m_state;
   
     std::vector<Cell> m_grid;
