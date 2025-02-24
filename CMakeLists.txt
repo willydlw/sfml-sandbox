@@ -34,6 +34,7 @@ FetchContent_MakeAvailable(ImGui-SFML)
 add_subdirectory(project1)
 add_subdirectory(project2)
 add_subdirectory(maze_gen_dfs)
+add_subdirectory(gameOfLife)
 #add_subdirectory(utils)
 
 # Optionally set global compile definitions or flags
