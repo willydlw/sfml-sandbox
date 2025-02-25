@@ -7,14 +7,29 @@
 
 #define SCREEN_WIDTH    800
 #define SCREEN_HEIGHT   800
-#define GRID_ROWS       40
-#define GRID_COLS       40
-#define CELL_SIZE        SCREEN_WIDTH / GRID_COLS  
+#define GRID_ROWS       80
+#define GRID_COLS       80
+#define CELL_SIZE       SCREEN_WIDTH / GRID_COLS  
 
 
 int main(void)
 {
     sf::RenderWindow window(sf::VideoMode({SCREEN_WIDTH, SCREEN_HEIGHT}), "Conway's Game of Life");
+    sf::Font font;
+
+    // TODO: correct copy path in cmake lists so this can be changed
+    // to just "arial.ttf"
+    if(!font.openFromFile("build/bin/fonts/arial.ttf"))
+    {
+        std::cerr << "Error opening font file\n";
+        return 1;
+    }
+
+    sf::Text text(font);
+    text.setString("Generation");
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::Red);
+
 
     GameLife game(GRID_ROWS, GRID_COLS, CELL_SIZE);
     game.initRandom(0,1);
@@ -36,6 +51,7 @@ int main(void)
         window.clear(GameLife::DEAD_COLOR);
         game.nextGeneration();
         game.draw(window);
+        window.draw(text);
         window.display();
     }
 
