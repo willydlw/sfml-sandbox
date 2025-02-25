@@ -1,8 +1,44 @@
 #include "gameLife.hpp"
 
-GameLife::GameLife(int rows, int cols) : m_rows(rows), m_cols(cols), 
-        m_grid(rows, std::vector<int>(cols, 0)) {}
+// Define Class Constants
+const sf::Color GameLife::ALIVE_COLOR(sf::Color::White);
+const sf::Color GameLife::DEAD_COLOR (sf::Color{128, 128, 128});
 
+
+std::mt19937 GameLife::RAND_GEN(std::random_device{}());
+
+
+// Constructor
+GameLife::GameLife(int rows, int cols, int numCells) : 
+                    m_rows(rows), 
+                    m_cols(cols), 
+                    m_num_cells(numCells),
+                    m_cell_size(rows * cols / numCells),
+                    m_grid(rows, std::vector<int>(cols, 0)) {}
+
+
+// Destructor
+GameLife::~GameLife()
+{
+    std::cerr << __func__ << " bye-bye\n";
+}
+
+
+
+
+
+// Fill array with randomly generatred 1's and 0's
+void GameLife::initRandom(int min, int max)
+{
+    // Uniform distribution for integers between min and max (inclusive)
+    std::uniform_int_distribution<int> RAND_DIST01(min, max);
+
+    for(int r = 0; r < m_rows; r++){
+        for(int c = 0; c < m_cols; c++){
+            m_grid[r][c] = RAND_DIST01(RAND_GEN);
+        }
+    }
+}
 
 
 void GameLife::setInitialPattern(void)
@@ -70,16 +106,54 @@ int GameLife::countLiveNeighbors(int row, int col)
 
     int liveCount = 0;
 
-    for(int r = 0; r < 8; r++)
+    for(int i = 0; i < 8; i++)
     {
-        for(int c = 0; c < 8; c++)
+        if(m_grid[(row + dr[i] + m_rows) % m_rows][(col + dc[i] + m_cols) % m_cols] == ALIVE)
         {
-            if(m_grid[(row + r + m_rows) % m_rows][(col + c + m_cols) % m_cols] == ALIVE)
-            {
                 liveCount++;
-            }
         }
     }
 
     return liveCount;
+}
+
+
+void GameLife::draw(sf::RenderWindow& window)
+{
+    sf::RectangleShape rect(sf::Vector2f{static_cast<float>(m_cell_size - GameLife::OUTLINE_THICKNESS), 
+            static_cast<float>(m_cell_size - GameLife::OUTLINE_THICKNESS)});
+
+    for(int r = 0; r < m_rows; r++)
+    {
+        for(int c = 0; c < m_cols; c++)
+        {
+            
+            if(m_grid[r][c] == GameLife::ALIVE)
+            {
+                rect.setFillColor(sf::Color::White);
+                rect.setPosition(sf::Vector2f{static_cast<float>(c * m_cell_size), static_cast<float>(r * m_cell_size)});
+                rect.setOutlineColor(sf::Color::Black);
+                rect.setOutlineThickness(GameLife::OUTLINE_THICKNESS);
+                window.draw(rect);
+            }
+        }
+    }
+}
+
+
+
+std::ostream& operator << (std::ostream& os, const GameLife& obj)
+{
+    os << "\nrows: " << obj.m_rows << ", cols: " << obj.m_cols 
+        << "\nnum cells: " << obj.m_num_cells << ", cell size: " << obj.m_cell_size 
+        << "\nCell States\n";
+
+    for(int r = 0; r < obj.m_rows; r++){
+        for(int c = 0; c < obj.m_cols; c++){
+            os << obj.m_grid[r][c] << " ";
+        }
+        os << "\n";
+    }
+
+    return os;
 }
