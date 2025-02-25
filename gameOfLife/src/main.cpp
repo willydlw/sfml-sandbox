@@ -3,9 +3,10 @@
 #include <iostream>
 #include <optional>
 #include <random>
+#include <vector>
 
 #define SCREEN_WIDTH    800
-#define SCREEN_HEIGHT   800 
+#define SCREEN_HEIGHT   800
 #define GRID_ROWS       40
 #define GRID_COLS       40
 #define CELL_WIDTH       SCREEN_WIDTH / GRID_COLS  
@@ -26,6 +27,11 @@ void initRandom(int *arr, int  rows, int cols)
             arr[r * cols + c] = RAND_DIST01(RAND_GEN);
         }
     }
+}
+
+void update(int *arr, int rows, int cols)
+{
+    int temp[rows][cols];
 }
 
 void drawGrid(sf::RenderWindow& window, int *arr, int rows, int cols)
