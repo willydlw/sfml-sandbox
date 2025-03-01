@@ -40,11 +40,19 @@ void GameLife::initRandom(int min, int max)
 }
 
 
-void GameLife::setInitialPattern(void)
+void GameLife::setInitialPattern(const std::vector<Location>& aliveLocations)
 {
-
+    for(auto loc : aliveLocations)
+    {
+        m_grid[loc.row][loc.col] = GameLife::ALIVE;
+    }
 }
 
+
+void GameLife::showNeighbors(int row, int col)
+{
+    std::cout << "Testing row: " << row << ", col: " << col  << "\n";
+}
 
 void GameLife::nextGeneration(void)
 {

@@ -7,6 +7,11 @@
 #include <random>
 #include <vector>
 
+struct Location{
+    int row;
+    int col;
+};
+
 class GameLife{
     public:
 
@@ -31,12 +36,14 @@ class GameLife{
     ~GameLife();
 
     void initRandom(int min = 0, int max = 1);
-    void setInitialPattern();
+    void setInitialPattern(const std::vector<Location>& aliveLocations);
 
 
     void nextGeneration(void);
 
     void draw(sf::RenderWindow& window);
+
+   
 
     // overloaded operators
     friend std::ostream& operator << (std::ostream& os, const GameLife& obj);
@@ -49,8 +56,7 @@ class GameLife{
     std::vector<std::vector<int>> m_grid;
 
     int countLiveNeighbors(int row, int col);
-
-    
+    void showNeighbors(int row, int col);
 };
 
 
