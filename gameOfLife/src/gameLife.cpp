@@ -23,6 +23,17 @@ GameLife::~GameLife()
 }
 
 
+// accessor functions
+int GameLife::getCellState (int row, int col) const 
+{
+    return m_grid[row][col];
+}
+
+int GameLife::getRows() const {return m_rows;}
+int GameLife::getCols() const {return m_cols;}
+int GameLife::getCellSize() const {return m_cell_size;}
+
+
 
 
 
@@ -48,11 +59,6 @@ void GameLife::setInitialPattern(const std::vector<Location>& aliveLocations)
     }
 }
 
-
-void GameLife::showNeighbors(int row, int col)
-{
-    std::cout << "Testing row: " << row << ", col: " << col  << "\n";
-}
 
 void GameLife::nextGeneration(void)
 {
@@ -107,15 +113,12 @@ void GameLife::nextGeneration(void)
 */
 int GameLife::countLiveNeighbors(int row, int col)
 {
-    //  Neighbor pattern: NE, N, NW, E, W, SE, S, SW
-    const int dr[8] = {-1, -1, +1,  0,  0, +1, +1, +1};
-    const int dc[8] = {-1,  0, +1, -1, +1, -1,  0, +1};
-
     int liveCount = 0;
 
-    for(int i = 0; i < 8; i++)
+    for(int i = 0; i < NUM_NEIGHBORS; i++)
     {
-        if(m_grid[(row + dr[i] + m_rows) % m_rows][(col + dc[i] + m_cols) % m_cols] == ALIVE)
+        Location neighbor = calcNeighborLocation(row, col, DR[i], DC[i]);
+        if(m_grid[neighbor.row][neighbor.col] == ALIVE)
         {
                 liveCount++;
         }
@@ -123,6 +126,29 @@ int GameLife::countLiveNeighbors(int row, int col)
 
     return liveCount;
 }
+
+Location GameLife::calcNeighborLocation(int row, int col, int rowOffset, int colOffset)
+{
+    Location neighbor;
+    neighbor.row = (row + rowOffset + m_rows) % m_rows;
+    neighbor.col = (col + colOffset + m_cols) % m_cols;
+    return neighbor;
+}
+
+// returns list of all neighbor locations
+std::vector<Location> GameLife::getNeighborList(int row, int col)
+{
+    std::vector<Location> neighbors(NUM_NEIGHBORS);
+
+    for(int i = 0; i < NUM_NEIGHBORS; i++)
+    {
+        Location loc = calcNeighborLocation(row, col, GameLife::DR[i], GameLife::DC[i]);
+        neighbors[i] = loc;
+    }
+
+    return neighbors;
+}
+
 
 
 void GameLife::draw(sf::RenderWindow& window)

@@ -14,7 +14,11 @@ add_executable(gameLife)
 target_sources(gameLife PRIVATE src/main.cpp src/gameLife.cpp)
 
 add_executable(testNeighbors)
-target_sources(testNeighbors PRIVATE src/test.cpp src/gameLife.cpp)
+target_sources(testNeighbors PRIVATE 
+    test/main.cpp
+    test/neighborTest.cpp 
+    src/gameLife.cpp
+)
 
 
 # Link to other libraries (if needed)
