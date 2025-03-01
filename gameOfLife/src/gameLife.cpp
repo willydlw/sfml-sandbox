@@ -9,11 +9,10 @@ std::mt19937 GameLife::RAND_GEN(std::random_device{}());
 
 
 // Constructor
-GameLife::GameLife(int rows, int cols, int numCells) : 
+GameLife::GameLife(int rows, int cols, int cellSize) : 
                     m_rows(rows), 
                     m_cols(cols), 
-                    m_num_cells(numCells),
-                    m_cell_size(rows * cols / numCells),
+                    m_cell_size(cellSize),
                     m_grid(rows, std::vector<int>(cols, 0)) {}
 
 
@@ -144,16 +143,18 @@ void GameLife::draw(sf::RenderWindow& window)
 
 std::ostream& operator << (std::ostream& os, const GameLife& obj)
 {
-    os << "\nrows: " << obj.m_rows << ", cols: " << obj.m_cols 
-        << "\nnum cells: " << obj.m_num_cells << ", cell size: " << obj.m_cell_size 
+    os  << "\nrows: " << obj.m_rows << ", cols: " << obj.m_cols 
+        << ", cell size: " << obj.m_cell_size 
         << "\nCell States\n";
 
+    #if 0
     for(int r = 0; r < obj.m_rows; r++){
         for(int c = 0; c < obj.m_cols; c++){
             os << obj.m_grid[r][c] << " ";
         }
         os << "\n";
     }
+    #endif
 
     return os;
 }

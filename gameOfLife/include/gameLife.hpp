@@ -25,7 +25,7 @@ class GameLife{
 
     // constructors
     GameLife() = default;
-    GameLife(int rows, int cols, int numCells);
+    GameLife(int rows, int cols, int cellSize);
 
     // destructor
     ~GameLife();
@@ -45,7 +45,6 @@ class GameLife{
 
     int m_rows;
     int m_cols;
-    int m_num_cells;
     int m_cell_size;
     std::vector<std::vector<int>> m_grid;
 

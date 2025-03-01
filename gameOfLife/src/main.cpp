@@ -9,7 +9,7 @@
 #define SCREEN_HEIGHT   800
 #define GRID_ROWS       80
 #define GRID_COLS       80
-#define CELL_SIZE       SCREEN_WIDTH / GRID_COLS  
+#define CELL_SIZE       (SCREEN_WIDTH / GRID_COLS)  
 
 
 int main(void)
@@ -30,11 +30,12 @@ int main(void)
     text.setCharacterSize(24);
     text.setFillColor(sf::Color::Red);
 
-
     GameLife game(GRID_ROWS, GRID_COLS, CELL_SIZE);
     game.initRandom(0,1);
 
-    window.setFramerateLimit(2);
+    std::cerr << "Game Info\n" << game << "\n";
+
+    window.setFramerateLimit(5);
 
     while(window.isOpen())
     {
