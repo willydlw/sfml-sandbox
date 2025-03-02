@@ -19,13 +19,6 @@ namespace neighborTest{
      void runTests(void);
      void neighborTest(std::vector<Location>& testLocations, std::string& testName);
 
-
-
-    // Visual confirmation of neighbors
-    //      Test cell is located at row, col 
-    //      Draw test cell's neighbors in neighbor color
-    void showNeighbors(int row, int col, sf::Color& testCellColor, sf::Color& neighborColor);
-
 }
 
 #endif 

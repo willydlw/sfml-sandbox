@@ -3,8 +3,10 @@
 // Define Class Constants
 const sf::Color GameLife::ALIVE_COLOR(sf::Color::White);
 const sf::Color GameLife::DEAD_COLOR (sf::Color{128, 128, 128});
+const sf::Color GameLife::TEST_COLOR(sf::Color{0, 159, 74});        // green
+const sf::Color GameLife::NEIGHBOR_COLOR(sf::Color{255, 92, 0});    // orange
 
-
+// Random Number Generator
 std::mt19937 GameLife::RAND_GEN(std::random_device{}());
 
 
@@ -34,8 +36,10 @@ int GameLife::getCols() const {return m_cols;}
 int GameLife::getCellSize() const {return m_cell_size;}
 
 
-
-
+void GameLife::setCellState(int row, int col, int state)
+{
+    m_grid[row][col] = state;
+}
 
 // Fill array with randomly generatred 1's and 0's
 void GameLife::initRandom(int min, int max)
@@ -173,7 +177,30 @@ void GameLife::draw(sf::RenderWindow& window)
     }
 }
 
+void GameLife::drawNeighbors(sf::RenderWindow& window, const Location& centerCell, 
+    const std::vector<Location>& neighbors)
+{
+    sf::RectangleShape rect(sf::Vector2f{static_cast<float>(m_cell_size - GameLife::OUTLINE_THICKNESS), 
+        static_cast<float>(m_cell_size - GameLife::OUTLINE_THICKNESS)});
 
+    rect.setFillColor(GameLife::TEST_COLOR);
+    sf::Vector2f position{static_cast<float>(centerCell.col * m_cell_size), 
+                static_cast<float>(centerCell.row * m_cell_size)};
+    rect.setPosition(position);
+    rect.setOutlineColor(sf::Color::Black);
+    rect.setOutlineThickness(GameLife::OUTLINE_THICKNESS);
+    window.draw(rect);
+
+    rect.setFillColor(GameLife::NEIGHBOR_COLOR);
+
+    for(auto n : neighbors)
+    {             
+        rect.setPosition(sf::Vector2f{static_cast<float>(n.col * m_cell_size), static_cast<float>(n.row * m_cell_size)});
+        rect.setOutlineColor(sf::Color::Black);
+        rect.setOutlineThickness(GameLife::OUTLINE_THICKNESS);
+        window.draw(rect);
+    }
+}
 
 std::ostream& operator << (std::ostream& os, const GameLife& obj)
 {

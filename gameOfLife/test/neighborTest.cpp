@@ -27,11 +27,19 @@ namespace neighborTest
             }
 
             // call clear to erase contents of previous frame
-            window.clear(GameLife::DEAD_COLOR);
+            window.clear(sf::Color::Black);
             game.draw(window);
+
+            for(int i = 0; i < 1; i++)
+            {
+                int r = testLocations[i].row;
+                int c = testLocations[i].col;
+                std::vector<Location> neighborList = game.getNeighborList(r, c);
+                game.drawNeighbors(window, testLocations[i], neighborList);
+            }
+            
             window.display();
         }
-
     }
 
     void runTests(void)
@@ -46,17 +54,6 @@ namespace neighborTest
             neighborTest(testLocation, testName);
 
         }
-    }
-
-
-
-    // Visual confirmation of neighbors
-    //      Test cell is located at row, col 
-    //      Draw test cell's neighbors in neighbor color
-    void showNeighbors(int row, int col, sf::Color& testCellColor, sf::Color& neighborColor)
-    {
-        std::cout << __func__ << " Under Construction ***\n";
-        std::cout << "row: " << row << ", col: " << col << "\n";
     }
 
 

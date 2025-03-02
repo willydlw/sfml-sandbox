@@ -16,20 +16,21 @@ struct Location{
 
 class GameLife{
     public:
-
+    // Drawing Constants
     static const sf::Color ALIVE_COLOR;
     static const sf::Color DEAD_COLOR;
-
-
-    static constexpr int DEAD = 0;
-    static constexpr int ALIVE = 1;
+    static const sf::Color TEST_COLOR;
+    static const sf::Color NEIGHBOR_COLOR;
 
     static constexpr float OUTLINE_THICKNESS = 2.0f;
+
+    // Cell States
+    static constexpr int DEAD = 0;
+    static constexpr int ALIVE = 1;
 
     // Random number generater seeded with std::random_device
     static std::mt19937 RAND_GEN;
     
-   
     //  Neighbor offset pattern: NE, N, NW, E, W, SE, S, SW
     static constexpr int NUM_NEIGHBORS = 8;
     const int DR[NUM_NEIGHBORS] = {-1, -1, +1,  0,  0, +1, +1, +1};
@@ -49,16 +50,17 @@ class GameLife{
     int getCols() const;
     int getCellSize() const;
 
+    // setter functions 
+    void setCellState(int row, int col, int state);
+
 
     // Initialization
     void initRandom(int min = 0, int max = 1);
     void setInitialPattern(const std::vector<Location>& aliveLocations);
 
     // Process next generation
-    
-
-    int countLiveNeighbors(int row, int col);
     Location calcNeighborLocation(int row, int col, int rowOffset, int colOffset);
+    int countLiveNeighbors(int row, int col);
     std::vector<Location> getNeighborList(int row, int col);
 
     // Apply rules to generate the next generation
@@ -68,6 +70,10 @@ class GameLife{
     // Draw Grid
     void draw(sf::RenderWindow& window);
 
+    // Draws test cell and surrounding neigbhors
+    // Used as a visual confirmation that neighbors are correctly identified
+    void drawNeighbors(sf::RenderWindow& window, const Location& centerCell, 
+            const std::vector<Location>& neighbors);
 
     // overloaded operators
     friend std::ostream& operator << (std::ostream& os, const GameLife& obj);
