@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "arrow.hpp"
 #include "vectorMath.hpp"
 
 #define WINDOW_WIDTH 800
@@ -49,6 +50,10 @@ int main(void)
                 << "heading, rad: " << testHeadingRad << ", degrees: " << testHeadingDegrees
                 << std::endl;
 
+    ArrowShape arrow(sf::Vector2f{WINDOW_WIDTH/2, WINDOW_HEIGHT/2}, 
+                     sf::Vector2f{WINDOW_WIDTH/2 + 30, WINDOW_HEIGHT/2 + 40});
+    arrow.setColor(sf::Color::Red);
+
     while(window.isOpen())
     {
         while(const std::optional event = window.pollEvent())
@@ -61,7 +66,8 @@ int main(void)
         window.clear(sf::Color::Black);
         window.draw(vertLine.data(), vertLine.size(), sf::PrimitiveType::Lines);
         window.draw(horzLine.data(), horzLine.size(), sf::PrimitiveType::Lines);
-        window.draw(rect1);
+        //window.draw(rect1);
+        window.draw(arrow);
         //window.draw(text);
         window.display();
     }

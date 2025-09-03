@@ -8,7 +8,10 @@ include_directories("include")
 
 # create executable or library 
 add_executable(arrow)
-target_sources(arrow PRIVATE src/main.cpp)
+target_sources(arrow PRIVATE 
+    src/main.cpp
+    src/arrow.cpp
+)
 
 
 # Link to other libraries (if needed)
