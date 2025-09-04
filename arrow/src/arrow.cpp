@@ -35,7 +35,7 @@ void ArrowShape::update(sf::Vector2f start, sf::Vector2f end)
     // sf::degrees() converts float type to angle type
     m_shaft.setRotation(sf::degrees(rotationDegrees));
 
-    // arrow head properties 
+    // arrow head convex shape properties 
     m_head.setPoint(0, sf::Vector2f(0.0f,0.0f));
     m_head.setPoint(1, sf::Vector2f(-m_headSize, m_headSize / 2.0f));
     m_head.setPoint(2, sf::Vector2f(-m_headSize, -m_headSize / 2.0f));

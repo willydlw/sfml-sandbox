@@ -39,20 +39,26 @@ int main(void)
     text.setString("Origin Translated to Center");
     text.setFillColor(sf::Color::Green);
 
-    sf::Vector2f test({30.0f, 40.0f});
-    float testMagnitude = calculateMagnitude(test);
-    float testHeadingRad = calculateHeading(test);
-    float testHeadingDegrees = radiansToDegrees(testHeadingRad);
+    float radius = 50.0f;
+    sf::CircleShape circle(radius);
+    circle.setFillColor(sf::Color::Green);
+    // If you don't set origin, then set position is the top 
+    // left corner of circle bounding box
+    circle.setOrigin({circle.getRadius(), circle.getRadius()});
+    circle.setPosition({radius, WINDOW_HEIGHT/2.0f});
 
-    std::cout   << "test vector\n"
-                << "position,  x: " << test.x  << ", y: " << test.y << "\n"
-                << "magnitude   : " << testMagnitude << "\n"
-                << "heading, rad: " << testHeadingRad << ", degrees: " << testHeadingDegrees
-                << std::endl;
+    sf::Vector2f circlePosition = circle.getPosition();
+    sf::Vector2f circleOrigin = circle.getOrigin();
+    std::cerr << "circle origin, x: " << circleOrigin.x 
+        << ", y: " << circleOrigin.y << "\n";
+    std::cerr << "circle position, x: " << circlePosition.x 
+        << ", y: " << circlePosition.y << "\n";
 
-    ArrowShape arrow(sf::Vector2f{WINDOW_WIDTH/2, WINDOW_HEIGHT/2}, 
-                     sf::Vector2f{WINDOW_WIDTH/2 + 30, WINDOW_HEIGHT/2 + 40});
+   
+    #if 1
+    ArrowShape arrow(circle.getPosition(), circle.getPosition() + sf::Vector2f(0.0f, 100.0f));
     arrow.setColor(sf::Color::Red);
+    #endif
 
     while(window.isOpen())
     {
@@ -66,7 +72,8 @@ int main(void)
         window.clear(sf::Color::Black);
         window.draw(vertLine.data(), vertLine.size(), sf::PrimitiveType::Lines);
         window.draw(horzLine.data(), horzLine.size(), sf::PrimitiveType::Lines);
-        //window.draw(rect1);
+       
+        window.draw(circle);
         window.draw(arrow);
         //window.draw(text);
         window.display();
