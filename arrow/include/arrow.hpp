@@ -16,7 +16,7 @@ class ArrowShape: public sf::Drawable, public sf::Transformable
 
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-        sf::RectangleShape m_body;
+        sf::RectangleShape m_shaft;
         sf::ConvexShape m_head;
         sf::Vector2f m_start;
         sf::Vector2f m_end;
