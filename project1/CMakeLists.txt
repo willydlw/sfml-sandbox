@@ -17,7 +17,7 @@ set(SRC_FILES
 )
 
 # executable
-set(exec_name p1)
+set(exec_name project1)
 add_executable(${exec_name} ${SRC_FILES})
 
 target_link_libraries(${exec_name}
