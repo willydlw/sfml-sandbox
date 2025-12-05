@@ -51,7 +51,7 @@ imgui-sfml-src/imgui-SFML.cpp: In function ‘void {anonymous}::RenderDrawLists(
 
 <strong>Error 1 Correction</strong>:
 
-Open the imgui-SFML.cpp file at  */build/_deps/imgui-sfml-src/imgui-SFML.cpp:956* and to go line 956. Replace
+Open the imgui-SFML.cpp file at  */build/_deps/imgui-sfml-src/imgui-SFML.cpp:956* and go to line 956. Replace
 
 ```c++
 assert(io.Fonts->TexID != (ImTextureID) nullptr); // You forgot to create and set font texture
