@@ -7,7 +7,7 @@ include(FetchContent)
 
 FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 3.0.0
+    GIT_TAG 3.0.2
     GIT_SHALLOW ON
     EXCLUDE_FROM_ALL
     SYSTEM)
@@ -15,7 +15,7 @@ FetchContent_MakeAvailable(SFML)
 
 FetchContent_Declare(ImGui
     GIT_REPOSITORY https://github.com/ocornut/imgui
-    GIT_TAG v1.91.1
+    GIT_TAG v1.92.5
     GIT_SHALLOW ON
     EXCLUDE_FROM_ALL
     SYSTEM)
@@ -37,6 +37,7 @@ add_subdirectory(maze_gen_dfs)
 add_subdirectory(gameOfLife)
 add_subdirectory(verlet_integration)
 add_subdirectory(arrow)
+add_subdirectory(animate)
 #add_subdirectory(utils)
 
 # Optionally set global compile definitions or flags
