@@ -19,7 +19,7 @@ int main(void)
 
     // TODO: correct copy path in cmake lists so this can be changed
     // to just "arial.ttf"
-    if(!font.openFromFile("build/bin/fonts/arial.ttf"))
+    if(!font.openFromFile("fonts/arial.ttf"))
     {
         std::cerr << "Error opening font file\n";
         return 1;

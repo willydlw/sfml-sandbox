@@ -34,7 +34,7 @@ int main(void)
     rect1.setFillColor(sf::Color::Green);
 
 
-    sf::Font font("arrow/fonts/arial.ttf");
+    sf::Font font("fonts/arial.ttf");
     sf::Text text(font);
     text.setString("Origin Translated to Center");
     text.setFillColor(sf::Color::Green);
