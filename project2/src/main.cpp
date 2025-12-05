@@ -5,7 +5,7 @@
 // Forward Declarations
 struct ImGuiDemoWindowData;
 
-static void ShowMyGuiWindow(bool *p_open);
+static void ShowMyGuiWindow(/*bool *p_open*/);
 static void MyGUIWindow();
 
 
@@ -16,7 +16,7 @@ struct ImGuiDemoWindowData
 };
 
 
-void ShowMyGuiWindow(bool *p_open)
+void ShowMyGuiWindow(/*bool *p_open*/)
 {
     // Exceptionally add an extra assert here for people confused about initial Dear ImGui setup
     // Most functions would normally just assert/crash if the context is missing.
@@ -69,7 +69,7 @@ void MyGUIWindow(){
 int main()
 {
     bool listEnabled = false; 
-    bool p_open = true;
+    //bool p_open = true;
 
     auto window = sf::RenderWindow(sf::VideoMode({800u, 600u}), "CMake SFML Project");
     window.setFramerateLimit(60);
@@ -95,7 +95,7 @@ int main()
             MyGUIWindow();
         }
 
-        ShowMyGuiWindow(&p_open);
+        ShowMyGuiWindow(/*&p_open*/);
 
         window.clear();
         ImGui::SFML::Render(window);
