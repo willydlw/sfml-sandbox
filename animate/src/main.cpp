@@ -2,11 +2,14 @@
 
 #include <iostream>
 #include <optional>
+#include <cmath>            // floor
 
 int main()
 {
     // create the window
     sf::RenderWindow window(sf::VideoMode({800, 600}), "Santa Animation");
+
+    sf::Vector2u windowSize = window.getSize();
 
     sf::RectangleShape ground{{800, 100}};
     ground.setPosition({0, 500});
@@ -17,10 +20,33 @@ int main()
         std::cerr << "Failed to load image\n";
     }
 
+    santaTexture.setSmooth(false);
+
     sf::Sprite santaSprite(santaTexture);
+ 
     
     sf::Vector2u tsize = santaTexture.getSize();
     std::cerr << "texture size, x: " << tsize.x << ", y: " << tsize.y << "\n";
+
+    // scale images to 15% of window size
+    float scaleX = (windowSize.x * 0.15f) / tsize.x;
+    float scaleY = (windowSize.y * 0.15f) / tsize.y;
+
+    // to maintain aspect ratio and prevent stretching, use smaller of two scale factors 
+    float scaleFactor = std::min(scaleX, scaleY);
+
+    std::cerr << "scaleFactor: " << scaleFactor << ", scaleX: " << scaleX << ", scaleY: " << scaleY << "\n";
+
+    float scaledWidth = floor(tsize.x * scaleFactor);
+    float scaledHeight = floor(tsize.y * scaleFactor);
+
+    std::cerr << "scaled width: " << scaledWidth << ", height: " << scaledHeight << "\n";
+
+
+    santaSprite.setScale({scaleFactor, scaleFactor}); 
+
+    santaSprite.setPosition({scaledWidth, 500-scaledHeight});
+   
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -38,8 +64,8 @@ int main()
 
         // draw everything here...
         window.draw(ground);
-
         window.draw(santaSprite);
+       
 
         // end the current frame
         window.display();
