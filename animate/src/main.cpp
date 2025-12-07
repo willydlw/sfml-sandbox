@@ -1,52 +1,35 @@
 #include <SFML/Graphics.hpp>
-
 #include <iostream>
-#include <optional>
-#include <cmath>            // floor
 
 int main()
 {
     // create the window
-    sf::RenderWindow window(sf::VideoMode({800, 600}), "Santa Animation");
+    sf::RenderWindow window(sf::VideoMode({960, 720}), "My window");
 
-    sf::Vector2u windowSize = window.getSize();
+    // Construct the texture from an image
+    sf::Texture santaTexture("images/Walk1.png", false, sf::IntRect{{0,0}, {100,200}});
 
-    sf::RectangleShape ground{{800, 100}};
-    ground.setPosition({0, 500});
-    ground.setFillColor(sf::Color::Green);
+    sf::Vector2u tSize = santaTexture.getSize();
+    std::cerr << "texture size, x: " << tSize.x << ", y: " << tSize.y << "\n";
 
-    sf::Texture santaTexture;
-    if(!santaTexture.loadFromFile("images/Walk1.png")){
-        std::cerr << "Failed to load image\n";
-    }
-
-    santaTexture.setSmooth(false);
+    
 
     sf::Sprite santaSprite(santaTexture);
- 
-    
-    sf::Vector2u tsize = santaTexture.getSize();
-    std::cerr << "texture size, x: " << tsize.x << ", y: " << tsize.y << "\n";
 
-    // scale images to 15% of window size
-    float scaleX = (windowSize.x * 0.15f) / tsize.x;
-    float scaleY = (windowSize.y * 0.15f) / tsize.y;
-
-    // to maintain aspect ratio and prevent stretching, use smaller of two scale factors 
-    float scaleFactor = std::min(scaleX, scaleY);
-
-    std::cerr << "scaleFactor: " << scaleFactor << ", scaleX: " << scaleX << ", scaleY: " << scaleY << "\n";
-
-    float scaledWidth = floor(tsize.x * scaleFactor);
-    float scaledHeight = floor(tsize.y * scaleFactor);
-
-    std::cerr << "scaled width: " << scaledWidth << ", height: " << scaledHeight << "\n";
+    #if 1
+    if(!santaTexture.resize({tSize.x / 2, tSize.y / 2}, true))
+    {
+        std::cerr << "resize failed\n";
+    }
 
 
-    santaSprite.setScale({scaleFactor, scaleFactor}); 
+    sf::Vector2u newSize = santaTexture.getSize();
+    std::cerr << "new size x: " << newSize.x << ", y: " << newSize.y << "\n";
 
-    santaSprite.setPosition({scaledWidth, 500-scaledHeight});
-   
+
+    santaSprite.setTexture(santaTexture);
+    #endif
+
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -60,12 +43,11 @@ int main()
         }
 
         // clear the window with black color
-        window.clear(sf::Color::White);
+        window.clear(sf::Color::Green);
 
         // draw everything here...
-        window.draw(ground);
+        // window.draw(...);
         window.draw(santaSprite);
-       
 
         // end the current frame
         window.display();
