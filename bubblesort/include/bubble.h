@@ -8,7 +8,7 @@ class Bubble
 
     Bubble() = default;
 
-    Bubble(sf::Color color);
+    Bubble(sf::Color color, sf::Vector2f position);
 
     void setFillColor(sf::Color color);
     void setPosition(sf::Vector2f position);
@@ -16,14 +16,16 @@ class Bubble
     sf::Color getFillColor()const;
     sf::Vector2f getPosition()const;
 
-    private:
-
     void draw(sf::RenderWindow& window);
 
+    private:
+
     // attributes
-    sf::CircleShape m_circle;
+   
     sf::Color m_color;
     uint32_t m_colorKey;
 
     sf::Vector2f m_position;
+
+    sf::CircleShape m_circle;
 };

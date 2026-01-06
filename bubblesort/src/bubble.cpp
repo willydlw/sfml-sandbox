@@ -1,9 +1,13 @@
 #include "bubble.h"
 
-Bubble::Bubble(sf::Color color) : 
+Bubble::Bubble(sf::Color color, sf::Vector2f position) : 
     m_color(color),
-    m_colorKey(m_color.toInteger())
-{}
+    m_colorKey(m_color.toInteger()),
+    m_position(position)
+{
+    m_circle.setFillColor(sf::Color::Green);
+    m_circle.setPosition(m_position);
+}
 
 void Bubble::draw(sf::RenderWindow& window)
 {

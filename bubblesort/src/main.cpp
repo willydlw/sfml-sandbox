@@ -4,21 +4,21 @@
 
 
 #include <SFML/Graphics.hpp>
-
 #include "randomGenerator.hpp"
+#include "utility.h"
 
 
 constexpr int WINDOW_WIDTH  = 640;
 constexpr int WINDOW_HEIGHT = 480;
 constexpr float BUBBLE_RADIUS = 20;
 
-constexpr int NUM_CIRCLES = 10;
+constexpr int NUM_BUBBLES = 10;
 
 
 int main(void)
 {
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Bubble Sort");
-    window.setFramerateLimit(1);
+    window.setFramerateLimit(60);
 
     sf::Font font;
     if(!font.openFromFile("fonts/arial.ttf")){
@@ -26,25 +26,11 @@ int main(void)
         return -1;
     }
 
-    // Generate unsigned 24 bit random values
-    // Store result in 32-bite unsigned int
-    RandomGenerator<uint32_t> colorGenerator(0x000000, 0xFFFFFF);
+    std::vector<Bubble> bubbles(NUM_BUBBLES);
+    
 
-    uint32_t result = colorGenerator.generate();
-
-    std::cout << "Random color generated: " << std::ios::hex << result << "\n";
-
-    std::vector<sf::CircleShape> circles(NUM_CIRCLES);
-
-    float offset = WINDOW_HEIGHT / NUM_CIRCLES;
-
-    // initialize circle shapes
-    for(int i = 0; i < NUM_CIRCLES; i++){
-        circles[i].setRadius(BUBBLE_RADIUS);
-        circles[i].setPosition({static_cast<float>(WINDOW_WIDTH/2), 
-                                static_cast<float>( BUBBLE_RADIUS + i * offset)});
-        circles[i].setFillColor({150, 150, 150});
-    }
+    init_Bubbles(bubbles, NUM_BUBBLES, BUBBLE_RADIUS, {WINDOW_WIDTH, WINDOW_HEIGHT});
+    
 
 
     while(window.isOpen())
@@ -57,9 +43,8 @@ int main(void)
         }
 
         window.clear(sf::Color::Black);
-        for(int i = 0; i < NUM_CIRCLES; i++){
-            window.draw(circles[i]);
-            
+        for(int i = 0; i < NUM_BUBBLES; i++){
+            bubbles[i].draw(window);
         }
         window.display();
     }

@@ -25,7 +25,7 @@ void ShowMyGuiWindow(/*bool *p_open*/)
     // Verify ABI compatibility between caller code and compiled version of Dear ImGui. This helps detects some build issues.
     IMGUI_CHECKVERSION();
 
-    static ImGuiDemoWindowData demo_data;
+    //static ImGuiDemoWindowData demo_data;
 
 
     // We specify a default position/size in case there's no data in the .ini file.

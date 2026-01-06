@@ -23,7 +23,7 @@ namespace ver
     class Particle{
         public:
 
-        Particle() = default;
+        Particle();
         Particle(const Vector2D<float>& pos, const Vector2D<float>& vel, float m_mass);
 
         Particle(const Particle& obj) = default;

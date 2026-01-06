@@ -24,6 +24,7 @@ add_executable(bubbleup)
 target_sources(bubbleup PRIVATE 
     src/main.cpp
     src/bubble.cpp
+    src/utility.cpp
     include/randomGenerator.hpp
 )
 
