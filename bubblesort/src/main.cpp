@@ -2,21 +2,18 @@
 #include <optional>
 #include <string>
 
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/Text.hpp>
+
+#include <SFML/Graphics.hpp>
+
+#include "randomGenerator.hpp"
+
 
 constexpr int WINDOW_WIDTH  = 640;
 constexpr int WINDOW_HEIGHT = 480;
-constexpr float RECT_WIDTH = 64;
-constexpr float RECT_HEIGHT = 48;
+constexpr float BUBBLE_RADIUS = 20;
 
-constexpr int ASIZE = 5;
+constexpr int NUM_CIRCLES = 10;
 
-constexpr int RECT_SPACING = (WINDOW_WIDTH - (ASIZE * RECT_WIDTH)) / (ASIZE + 1);
-
-constexpr int UNSORTED[5] = {7, 12, 9, 11, 3};
 
 int main(void)
 {
@@ -29,49 +26,25 @@ int main(void)
         return -1;
     }
 
-    std::cout << "RECT_SPACING: " << RECT_SPACING << "\n";
+    // Generate unsigned 24 bit random values
+    // Store result in 32-bite unsigned int
+    RandomGenerator<uint32_t> colorGenerator(0x000000, 0xFFFFFF);
 
-    std::vector<sf::RectangleShape> rects(ASIZE);
-    std::vector<sf::Text> rectText;                 // sf::Text has no default constructor, so no size is specified
+    uint32_t result = colorGenerator.generate();
 
-    // initialize rectangle shapes
-    for(int i = 0; i < ASIZE; i++){
-        rects[i].setSize({RECT_WIDTH, RECT_HEIGHT});
-        rects[i].setPosition({static_cast<float>((i+1) * RECT_SPACING + i * RECT_WIDTH), 
-                                static_cast<float>( (WINDOW_HEIGHT - RECT_HEIGHT)/2)});
-        rects[i].setFillColor({150, 150, 150});
+    std::cout << "Random color generated: " << std::ios::hex << result << "\n";
+
+    std::vector<sf::CircleShape> circles(NUM_CIRCLES);
+
+    float offset = WINDOW_HEIGHT / NUM_CIRCLES;
+
+    // initialize circle shapes
+    for(int i = 0; i < NUM_CIRCLES; i++){
+        circles[i].setRadius(BUBBLE_RADIUS);
+        circles[i].setPosition({static_cast<float>(WINDOW_WIDTH/2), 
+                                static_cast<float>( BUBBLE_RADIUS + i * offset)});
+        circles[i].setFillColor({150, 150, 150});
     }
-
-    #if 1
-    // initialize rectangle text objects
-    for(int i = 0; i < ASIZE; i++){
-        sf::Text text(font);
-
-        text.setString(std::to_string(UNSORTED[i]));
-        text.setCharacterSize(32);
-        text.setFillColor(sf::Color::White);
-
-        
-        sf::FloatRect textBounds = text.getLocalBounds();
-        sf::Vector2f tpos = textBounds.position;
-        sf::Vector2f tsize = textBounds.size;
-
-        std::cout << "i: " << i << " tpos, x: " << tpos.x << ", y: " << tpos.y << 
-                ", tsize, x: " << tsize.x << ", y: " << tsize.y << "\n";
-        
-        text.setOrigin({tpos.x + tsize.x / 2.0f,
-                        tpos.y + tsize.y / 2.0f });
-
-        sf::Vector2f rectCenter = rects[i].getPosition() + rects[i].getSize() / 2.0f;
-        text.setPosition(rectCenter);
-        
-        rectText.push_back(text);
-    }
-
-    #endif
-
-    std::cout << "rectText.size() " << rectText.size() << "\n";
-
 
 
     while(window.isOpen())
@@ -84,9 +57,9 @@ int main(void)
         }
 
         window.clear(sf::Color::Black);
-        for(int i = 0; i < ASIZE; i++){
-            window.draw(rects[i]);
-            window.draw(rectText[i]);
+        for(int i = 0; i < NUM_CIRCLES; i++){
+            window.draw(circles[i]);
+            
         }
         window.display();
     }

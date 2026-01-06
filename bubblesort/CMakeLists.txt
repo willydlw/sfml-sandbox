@@ -17,13 +17,21 @@ include_directories("include")
 
 
 # executables
-add_executable(bubble)
-target_sources(bubble PRIVATE src/main.cpp)
+add_executable(bsort)
+target_sources(bsort PRIVATE src/example.cpp)
+
+add_executable(bubbleup)
+target_sources(bubbleup PRIVATE 
+    src/main.cpp
+    src/bubble.cpp
+    include/randomGenerator.hpp
+)
 
 
 
 # Link to other libraries (if needed)
-target_link_libraries(bubble PRIVATE SFML::Graphics)
+target_link_libraries(bsort PRIVATE SFML::Graphics)
+target_link_libraries(bubbleup PRIVATE SFML::Graphics)
 
 
 # copy font files to binary directories
