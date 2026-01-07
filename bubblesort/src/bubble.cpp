@@ -2,7 +2,8 @@
 
 Bubble::Bubble(sf::Color color, sf::Vector2f position, float radius) : 
     m_color(color),
-    m_colorKey(m_color.toInteger())
+    m_colorKey(m_color.toInteger()),
+    m_target_position(position)
 {
     m_circle.setFillColor(m_color);
     m_circle.setOutlineColor(sf::Color::Black);

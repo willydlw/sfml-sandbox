@@ -14,13 +14,19 @@ void init_Bubbles(std::vector<Bubble>& bubbles, int numBubbles, float radius,
 
     std::cout << __func__ << ", numBubbles: " << numBubbles << "\n";
 
+    float spacing = windowSize.x / numBubbles;
+
     for(int i = 0; i < numBubbles; i++){
         uint8_t red = colorGenerator.generate();
         uint8_t green = colorGenerator.generate();
         uint8_t blue = colorGenerator.generate();
 
         sf::Color color{red, green, blue};
-        sf::Vector2f position {xGenerator.generate(), yGenerator.generate()};
+        // sf::Vector2f position {xGenerator.generate(), yGenerator.generate()};
+
+        float xPos = i * spacing + (spacing / 2.f);
+        float yPos = windowSize.y / 2.f;    // center in the window
+        sf::Vector2f position = {xPos, yPos};
 
         #if 0
         std::cout << "red: " << (int)red << ", green: " << (int)green 
@@ -63,8 +69,6 @@ void bubbleSort(std::vector<Bubble>& bubbles)
                 sf::Vector2f tempPosition = bubbles[j].getPosition();
                 bubbles[j].setPosition(bubbles[j+1].getPosition());
                 bubbles[j+1].setPosition(tempPosition);
-                bubbles[j].setFillColor((bubbles[j].getColorKey()) & ~0xFF);
-                bubbles[j+1].setFillColor((bubbles[j+1].getColorKey()) & ~0xFF);
             }
         }
     }

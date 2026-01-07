@@ -22,11 +22,10 @@ class Bubble
     public:
 
     // attributes
-   
     sf::Color m_color;
     uint32_t m_colorKey;
 
-    //sf::Vector2f m_position;
+    sf::Vector2f m_target_position;
 
     sf::CircleShape m_circle;
 };
