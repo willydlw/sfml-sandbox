@@ -1,12 +1,14 @@
 #include "bubble.h"
 
-Bubble::Bubble(sf::Color color, sf::Vector2f position) : 
+Bubble::Bubble(sf::Color color, sf::Vector2f position, float radius) : 
     m_color(color),
-    m_colorKey(m_color.toInteger()),
-    m_position(position)
+    m_colorKey(m_color.toInteger())
 {
-    m_circle.setFillColor(sf::Color::Green);
-    m_circle.setPosition(m_position);
+    m_circle.setFillColor(m_color);
+    m_circle.setOutlineColor(sf::Color::Black);
+    m_circle.setOutlineThickness(1);
+    m_circle.setPosition(position);
+    m_circle.setRadius(radius);
 }
 
 void Bubble::draw(sf::RenderWindow& window)
@@ -22,7 +24,12 @@ void Bubble::setFillColor(sf::Color color)
 
 void Bubble::setPosition(sf::Vector2f position)
 {
-    m_position = position;
+    m_circle.setPosition(position);
+}
+
+uint32_t Bubble::getColorKey()const
+{
+    return m_colorKey;
 }
 
 sf::Color Bubble::getFillColor()const
@@ -32,5 +39,5 @@ sf::Color Bubble::getFillColor()const
 
 sf::Vector2f Bubble::getPosition()const
 {
-    return m_position;
+    return m_circle.getPosition();
 }
